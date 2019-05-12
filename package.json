@@ -1,0 +1,22 @@
+{
+  "name": "mrdicetinyzero",
+  "version": "1.0.0",
+  "description": "Un bot discord pour lancer des dé.",
+  "main": "dicetiny.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SRThibaultP/MrDicetinyZero.git"
+  },
+  "author": "ThibaultP",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SRThibaultP/MrDicetinyZero/issues"
+  },
+  "homepage": "https://github.com/SRThibaultP/MrDicetinyZero#readme",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  }
+}

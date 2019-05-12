@@ -18,7 +18,7 @@ Les commandes sont disponible dans le [wiki](https://github.com/SRThibaultP/MrDi
 
 Invitation du bot discord : https://discordapp.com/oauth2/authorize?&client_id=INSERTCLIENTID&scope=bot&permissions=0
 
-# Mise a jour
+# Mise à jour
 En cas de mise à jour, veuillez suivres les étapes suivantes :
 1. Télécharger les fichiers [ici](https://github.com/SRThibaultP/MrDicetinyZero/releases)
 2. Déplacer les fichiers dans le dossier de MrDicetinyZero

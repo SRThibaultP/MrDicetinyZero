@@ -40,7 +40,7 @@ dicetiny.on("message", async message => {
   if(message.channel.type === "dm") ;
 
   const prefix = dicetinyconfig.prefix;
-  const version = "MrDicetinyZero  - S1.0"; //VERSION DU BUILD
+  const version = "MrDicetinyZero  - S1.1"; //VERSION DU BUILD
   const JDRName = "Punk Runner" //NOM DU JDR
   const checkmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/checkmark.png';
   const crossmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/crossmark.png';

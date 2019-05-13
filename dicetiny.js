@@ -40,7 +40,7 @@ dicetiny.on("message", async message => {
   if(message.channel.type === "dm") ;
 
   const prefix = dicetinyconfig.prefix;
-  const version = "MrDicetinyZero  - S1.1"; //VERSION DU BUILD
+  const version = "MrDicetinyZero  - B1.2"; //VERSION DU BUILD
   const JDRName = "Punk Runner" //NOM DU JDR
   const checkmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/checkmark.png';
   const crossmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/crossmark.png';
@@ -169,23 +169,23 @@ dicetiny.on("message", async message => {
   }
 
   if(cmd === `${prefix}roll`){
-    if (gamestatus == 1) {
-      if (cmd2 == undefined) {
-        serverembed = new Discord.RichEmbed()
-        .setAuthor("Menu d'aide", questmark, "https://github.com/SRThibaultP/MrDicetinyZero")
-        .setURL("https://github.com/SRThibaultP")
-        .setColor("#18dcff")
-        .setThumbnail(uicon)
-        .setTitle("Développé par ThibaultP")
-        .setDescription("Support disponible sur GitHub : https://github.com/SRThibaultP/MrDicetinyZero")
-        .addField("À propos :", "Le dé utilisé par le bot est basé sur Donjons & Dragons.")
-        .addField("Commandes disponibles :", "`/roll dX` -> Lancer de dé. \n `/roll dXsY` -> Lancer de dé avec des stats.")
-        .addField("Syntaxe :", "Le chiffre après `d` indique le nombre de faces du dé. \n Le chiffre après `s` indique les stats du joueur.")
-        .addField("Remarque :","`X` et `Y` doivent être remplacé par des valeurs supérieur à 0. \n Si vous n'avez pas de stats, ajoutez pas le `s`")
-        .setFooter(version);
-        return message.channel.send(serverembed);
-      }
-      else {
+    if (cmd2 == undefined) {
+      serverembed = new Discord.RichEmbed()
+      .setAuthor("Menu d'aide", questmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+      .setURL("https://github.com/SRThibaultP")
+      .setColor("#18dcff")
+      .setThumbnail(uicon)
+      .setTitle("Développé par ThibaultP")
+      .setDescription("Support disponible sur GitHub : https://github.com/SRThibaultP/MrDicetinyZero")
+      .addField("À propos :", "Le dé utilisé par le bot est basé sur Donjons & Dragons.")
+      .addField("Commandes disponibles :", "`/roll dX` -> Lancer de dé. \n `/roll dXsY` -> Lancer de dé avec des stats.")
+      .addField("Syntaxe :", "Le chiffre après `d` indique le nombre de faces du dé. \n Le chiffre après `s` indique les stats du joueur.")
+      .addField("Remarque :","`X` et `Y` doivent être remplacé par des valeurs supérieur à 0. \n Si vous n'avez pas de stats, ajoutez pas le `s`")
+      .setFooter(version);
+      return message.channel.send(serverembed);
+    }
+    else {
+      if (gamestatus == 1) {
         var infos = cmd2.split(/s/); //valeur brut ex !roll d12s45 ->  d12,45
         var faces = infos[0].substr(1); //valeur apres "d" ("d" non compris avec .substr) ex !roll d12s45 ->  12
         var stats = infos[1]; //valeur apres "s" ex !roll d12s45 ->  45
@@ -420,18 +420,18 @@ dicetiny.on("message", async message => {
           return message.channel.send(serverembed);
         }
       }
-    }
-    else {
-      console.log("Erreur : La partie n'a pas démarrer");
-      console.log("********************");
-      serverembed = new Discord.RichEmbed()
-      .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
-      .setColor("#ff3838")
-      .setThumbnail(uicon)
-      .setTitle("La partie n'a pas démarrer")
-      .setDescription("Tapez `/gamestart` pour démarrer la partie.")
-      .setFooter(version);
-      return message.channel.send(serverembed);
+      else {
+        console.log("Erreur : La partie n'a pas démarrer");
+        console.log("********************");
+        serverembed = new Discord.RichEmbed()
+        .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+        .setColor("#ff3838")
+        .setThumbnail(uicon)
+        .setTitle("La partie n'a pas démarrer")
+        .setDescription("Tapez `/gamestart` pour démarrer la partie.")
+        .setFooter(version);
+        return message.channel.send(serverembed);
+      }
     }
   }
 })

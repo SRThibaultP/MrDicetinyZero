@@ -8,6 +8,14 @@ let Ssucess = 0;
 let SsuccessC = 0;
 let Sechec = 0;
 let SechecC = 0;
+//const version = "MrDicetinyZero  - B1.2"; //VERSION DU BUILD
+const version = "MrDicetinyZero  - PRIVATE BUILD"; //VERSION DU BUILD
+const JDRName = "Punk Runner" //NOM DU JDR
+const checkmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/checkmark.png';
+const crossmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/crossmark.png';
+const questmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/questmark.png';
+const errormark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/errormark.png';
+let fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
 
 dicetiny.on("ready", async () => {
   console.log("********************");
@@ -36,17 +44,10 @@ function beautifulM() {
 }
 
 dicetiny.on("message", async message => {
-  if(message.author.bot) ;
-  if(message.channel.type === "dm") ;
+  if(message.author.bot);
+  if(message.channel.type === "dm");
 
   const prefix = dicetinyconfig.prefix;
-  const version = "MrDicetinyZero  - B1.2"; //VERSION DU BUILD
-  const JDRName = "Punk Runner" //NOM DU JDR
-  const checkmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/checkmark.png';
-  const crossmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/crossmark.png';
-  const questmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/questmark.png';
-  const errormark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/errormark.png';
-  let fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
   let beautifulD = beautifulH() + ":" + beautifulM();
   let messageArray = message.content.split(" ");
   let cmd = messageArray[0];
@@ -54,17 +55,21 @@ dicetiny.on("message", async message => {
   let args = messageArray.slice(1);
   let userBrut = message.author;
   let user = userBrut + ": ";
+  let bicon = dicetiny.user.avatarURL;
   let gicon = message.guild.iconURL;
   let uicon = message.author.avatarURL;
   let aleatoire, serverembed, gamestart, gamestop, gameDstop;
 
 /*  if(cmd === `${prefix}botstop`){
     process.exit();
-  }
+  }*/
 
   if(cmd === `${prefix}info`){
-    console.log(gamestatus);
-  }*/
+    console.log(bicon);
+    serverembed = new Discord.RichEmbed()
+    .setThumbnail(bicon)
+    message.channel.send(serverembed);
+  }
 
   if(cmd === `${prefix}gamestart`){
     if (gamestatus == 1) {
@@ -74,7 +79,6 @@ dicetiny.on("message", async message => {
       .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
       .setURL("https://github.com/SRThibaultP/MrDicetinyZero")
       .setColor("#e67e22")
-      .setThumbnail(uicon)
       .setTitle("La partie à déja démarrer")
       .setDescription("Tapez `/gamestop` pour finir la partie.")
       .setFooter(version);
@@ -127,7 +131,6 @@ dicetiny.on("message", async message => {
       .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
       .setURL("https://github.com/SRThibaultP/MrDicetinyZero")
       .setColor("#e67e22")
-      .setThumbnail(uicon)
       .setTitle("La partie n'a pas démarrer")
       .setDescription("Tapez `/gamestart` pour démarrer la partie.")
       .setFooter(version);
@@ -140,7 +143,6 @@ dicetiny.on("message", async message => {
       serverembed = new Discord.RichEmbed()
       .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
       .setColor("#ff3838")
-      .setThumbnail(uicon)
       .setTitle("La partie n'a pas démarrer")
       .setDescription("Tapez `/gamestart` pour démarrer la partie.")
       .setFooter(version);
@@ -150,7 +152,6 @@ dicetiny.on("message", async message => {
       serverembed = new Discord.RichEmbed()
       .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
       .setColor("#ff3838")
-      .setThumbnail(uicon)
       .setTitle("Pas de stats disponibles")
       .setDescription("Tapez `/roll` pour afficher l'aide.")
       .setFooter(version);
@@ -174,7 +175,7 @@ dicetiny.on("message", async message => {
       .setAuthor("Menu d'aide", questmark, "https://github.com/SRThibaultP/MrDicetinyZero")
       .setURL("https://github.com/SRThibaultP")
       .setColor("#18dcff")
-      .setThumbnail(uicon)
+      .setThumbnail(bicon)
       .setTitle("Développé par ThibaultP")
       .setDescription("Support disponible sur GitHub : https://github.com/SRThibaultP/MrDicetinyZero")
       .addField("À propos :", "Le dé utilisé par le bot est basé sur Donjons & Dragons.")
@@ -219,7 +220,6 @@ dicetiny.on("message", async message => {
               serverembed = new Discord.RichEmbed()
               .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
               .setColor("#e67e22")
-              .setThumbnail(uicon)
               .setTitle("Les stats sont supérieur à 6")
               .setDescription("Tapez `/roll` pour afficher l'aide.")
               .setFooter(version);
@@ -281,7 +281,6 @@ dicetiny.on("message", async message => {
               serverembed = new Discord.RichEmbed()
               .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
               .setColor("#e67e22")
-              .setThumbnail(uicon)
               .setTitle("Les stats sont supérieur à 100")
               .setDescription("Tapez `/roll` pour afficher l'aide.")
               .setFooter(version);
@@ -353,7 +352,6 @@ dicetiny.on("message", async message => {
           serverembed = new Discord.RichEmbed()
           .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
           .setColor("#e67e22")
-          .setThumbnail(uicon)
           .setTitle("Les stats sont supérieur aux faces du dé")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
           .setFooter(version);
@@ -365,7 +363,6 @@ dicetiny.on("message", async message => {
           serverembed = new Discord.RichEmbed()
           .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
           .setColor("#e67e22")
-          .setThumbnail(uicon)
           .setTitle("Le dé ne possède pas de faces")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
           .setFooter(version);
@@ -377,7 +374,6 @@ dicetiny.on("message", async message => {
           serverembed = new Discord.RichEmbed()
           .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
           .setColor("#e67e22")
-          .setThumbnail(uicon)
           .setTitle("Le dé ne possède pas de stats")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
           .setFooter(version);
@@ -389,7 +385,6 @@ dicetiny.on("message", async message => {
           serverembed = new Discord.RichEmbed()
           .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
           .setColor("#e67e22")
-          .setThumbnail(uicon)
           .setTitle("Vous avez mis un espace après le `d`")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
           .setFooter(version);
@@ -401,7 +396,6 @@ dicetiny.on("message", async message => {
           serverembed = new Discord.RichEmbed()
           .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
           .setColor("#e67e22")
-          .setThumbnail(uicon)
           .setTitle("Les faces et stats du dé sont égaux à zero")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
           .setFooter(version);
@@ -413,7 +407,6 @@ dicetiny.on("message", async message => {
           serverembed = new Discord.RichEmbed()
           .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
           .setColor("#e67e22")
-          .setThumbnail(uicon)
           .setTitle("Mauvaise syntaxe")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
           .setFooter(version);
@@ -426,7 +419,6 @@ dicetiny.on("message", async message => {
         serverembed = new Discord.RichEmbed()
         .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
         .setColor("#ff3838")
-        .setThumbnail(uicon)
         .setTitle("La partie n'a pas démarrer")
         .setDescription("Tapez `/gamestart` pour démarrer la partie.")
         .setFooter(version);

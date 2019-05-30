@@ -21,8 +21,7 @@ dicetiny.on("ready", async () => {
   console.log("********************");
   console.log(`${dicetiny.user.username} est en ligne !`);
   console.log("********************");
-  //dicetiny.user.setActivity("Attend le démarage du JDR /gamestart pour démarrer la partie /roll pour afficher l'aide dans la partie", {type: "PLAYING"});
-  dicetiny.user.setActivity("JavaScript is SHIT", {type: "PLAYING"});
+  dicetiny.user.setActivity("Attend le démarage du JDR /gamestart pour démarrer la partie /roll pour afficher l'aide dans la partie", {type: "PLAYING"});
   dicetiny.user.setStatus('idle');
 });
 

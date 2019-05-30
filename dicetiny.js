@@ -1,27 +1,28 @@
 const dicetinyconfig = require("./config.json");
+const dicetinyadmin = require("./dicetiny.json");
+const images = require("./images.json");
 const Discord = require("discord.js");
 
 const dicetiny = new Discord.Client({disableEveryone: true});
-let gamestatus = 0;
-let gameDstart = 0;
-let Ssucess = 0;
-let SsuccessC = 0;
-let Sechec = 0;
-let SechecC = 0;
-//const version = "MrDicetinyZero  - B1.2"; //VERSION DU BUILD
-const version = "MrDicetinyZero  - PRIVATE BUILD"; //VERSION DU BUILD
-const JDRName = "Punk Runner" //NOM DU JDR
-const checkmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/checkmark.png';
-const crossmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/crossmark.png';
-const questmark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/questmark.png';
-const errormark = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/errormark.png';
-let fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
+let aleatoire, serverembed;
+let gamestart, gamestop, gamestatus = 0, gameDstart, gameDstop;
+let Ssuccess = SsuccessC = Sechec = SechecC = 0;
+const version = dicetinyadmin.version; //VERSION DU BUILD
+const JDRName = dicetinyconfig.JDRName; //NOM DU JDR
+const JDRAdmins = dicetinyconfig.adminRank;
+const JDRPlayers = dicetinyconfig.playerRank;
+const checkmark = images.checkmark;
+const crossmark = images.crossmark;
+const questmark = images.questmark;
+const errormark = images.errormark;
+let fichier = images.void;
 
 dicetiny.on("ready", async () => {
   console.log("********************");
   console.log(`${dicetiny.user.username} est en ligne !`);
   console.log("********************");
-  dicetiny.user.setActivity("Attend le démarage du JDR /gamestart pour démarrer la partie /roll pour afficher l'aide dans la partie", {type: "PLAYING"});
+  //dicetiny.user.setActivity("Attend le démarage du JDR /gamestart pour démarrer la partie /roll pour afficher l'aide dans la partie", {type: "PLAYING"});
+  dicetiny.user.setActivity("JavaScript is SHIT", {type: "PLAYING"});
   dicetiny.user.setStatus('idle');
 });
 
@@ -52,69 +53,82 @@ dicetiny.on("message", async message => {
   let messageArray = message.content.split(" ");
   let cmd = messageArray[0];
   let cmd2 = messageArray[1];
-  let args = messageArray.slice(1);
   let userBrut = message.author;
   let user = userBrut + ": ";
   let bicon = dicetiny.user.avatarURL;
   let gicon = message.guild.iconURL;
   let uicon = message.author.avatarURL;
-  let aleatoire, serverembed, gamestart, gamestop, gameDstop;
+  let members = message.guild.roles.get("576848344069046282").members;
 
 /*  if(cmd === `${prefix}botstop`){
     process.exit();
   }*/
 
   if(cmd === `${prefix}info`){
-    console.log(bicon);
+    username = "<@" + members.map(member => member.user.id) + ">";
+    console.log(username);
     serverembed = new Discord.RichEmbed()
     .setThumbnail(bicon)
-    message.channel.send(serverembed);
+    .setDescription(username)
+    return message.channel.send(serverembed);
   }
 
   if(cmd === `${prefix}gamestart`){
-    if (gamestatus == 1) {
-      console.log("Erreur : La partie à déja démarrer");
-      console.log("********************");
-      serverembed = new Discord.RichEmbed()
-      .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
-      .setURL("https://github.com/SRThibaultP/MrDicetinyZero")
-      .setColor("#e67e22")
-      .setTitle("La partie à déja démarrer")
-      .setDescription("Tapez `/gamestop` pour finir la partie.")
-      .setFooter(version);
-      message.channel.send(serverembed);
-    }
-    else {
+    if (gamestatus == 0 && message.member.roles.find(r => r.name === JDRAdmins)) {
       gamestatus = 1;
       gameDstart = beautifulD;
       console.log("JDR : Début de la partie");
       console.log("********************");
-      dicetiny.user.setActivity("🎲 JDR en cours 🎲 | [ " + JDRName + " ] Stats : SC: " + SsuccessC + " S: " + Ssucess+ " É: " + Sechec + " ÉC: " + SechecC, {type: "PLAYING"});
+      dicetiny.user.setActivity("🎲 JDR en cours 🎲 | [ " + JDRName + " ] Stats : SC: " + SsuccessC + " S: " + Ssuccess+ " É: " + Sechec + " ÉC: " + SechecC, {type: "PLAYING"});
       dicetiny.user.setStatus('online');
-      Ssucess = 0;
+      Ssuccess = 0;
       SsuccessC = 0;
       Sechec = 0;
       SechecC = 0;
       serverembed = new Discord.RichEmbed()
-      .setAuthor("Début de la partie", gicon, "https://github.com/SRThibaultP/MrDicetinyZero")
+      .setAuthor("Début de la partie", gicon, dicetinyadmin.githubDicetiny)
       .setColor("#55E6C1")
       .setThumbnail(uicon)
       .setTitle("Maître de jeu :")
       .setDescription(userBrut);
-      message.channel.send(serverembed);
+      return message.channel.send(serverembed);
+    }
+    else if (gamestatus == 1) {
+      console.log("Erreur : La partie à déja démarrer");
+      console.log("********************");
+      serverembed = new Discord.RichEmbed()
+      .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
+      .setURL(dicetinyadmin.githubDicetiny)
+      .setColor("#e67e22")
+      .setTitle("La partie à déja démarrer")
+      .setDescription("Tapez `/gamestop` pour finir la partie.")
+      .setFooter(version);
+      return message.channel.send(serverembed);
+    }
+    else if (message.member.roles.find(r => r.name != JDRAdmins)) {
+      console.log("Erreur : Vous n'êtes pas un maître de jeu");
+      console.log("********************");
+      serverembed = new Discord.RichEmbed()
+      .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
+      .setURL(dicetinyadmin.githubDicetiny)
+      .setColor("#e67e22")
+      .setTitle("Vous n'êtes pas un maître de jeu")
+      .setDescription("Veuillez patienter le temps que le maître de jeu lance la partie.")
+      .setFooter(version);
+      return message.channel.send(serverembed);
     }
   }
 
   if(cmd === `${prefix}gamestop`){
-    if (gamestatus == 1) {
+    if (gamestatus == 1 && message.member.roles.find(r => r.name === JDRAdmins)) {
       gameDstop = beautifulD;
       gamestatus = 0;
       console.log("JDR : Fin de la partie");
       console.log("********************");
-      dicetiny.user.setActivity("🎲 Fin du JDR 🎲 | [ " + JDRName + " ] /gamestart pour relancer la partie. Stats : ÉC: " + SechecC + " É: " + Sechec + " S: " + Ssucess + " SC: " + SsuccessC, {type: "PLAYING"});
+      dicetiny.user.setActivity("🎲 Fin du JDR 🎲 | [ " + JDRName + " ] /gamestart pour relancer la partie. Stats : ÉC: " + SechecC + " É: " + Sechec + " S: " + Ssuccess + " SC: " + SsuccessC, {type: "PLAYING"});
       dicetiny.user.setStatus('dnd');
       serverembed = new Discord.RichEmbed()
-      .setAuthor("Fin de la partie", gicon, "https://github.com/SRThibaultP/MrDicetinyZero")
+      .setAuthor("Fin de la partie", gicon, dicetinyadmin.githubDicetiny)
       .setColor("#FC427B")
       .setThumbnail(uicon)
       .setTitle("Durée de la partie :")
@@ -122,57 +136,71 @@ dicetiny.on("message", async message => {
       .addField("Début de la partie :", gameDstart)
       .addField("Fin de la partie :", gameDstop)
       .addField("Afficher les statistiques :", "`/gamestats`");
-      message.channel.send(serverembed);
+      return message.channel.send(serverembed);
     }
-    else {
+    else if(gamestatus == 0){
       console.log("Erreur : La partie n'a pas démarrer");
       console.log("********************");
       serverembed = new Discord.RichEmbed()
-      .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
-      .setURL("https://github.com/SRThibaultP/MrDicetinyZero")
+      .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
+      .setURL(dicetinyadmin.githubDicetiny)
       .setColor("#e67e22")
       .setTitle("La partie n'a pas démarrer")
       .setDescription("Tapez `/gamestart` pour démarrer la partie.")
       .setFooter(version);
-      message.channel.send(serverembed);
+      return message.channel.send(serverembed);
+    }
+    else if (message.member.roles.find(r => r.name != JDRAdmins)) {
+      console.log("Erreur : Vous n'êtes pas un maître de jeu");
+      console.log("********************");
+      serverembed = new Discord.RichEmbed()
+      .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
+      .setURL(dicetinyadmin.githubDicetiny)
+      .setColor("#e67e22")
+      .setTitle("Vous n'êtes pas un maître de jeu")
+      .setDescription("Veuillez patienter le temps que le maître de jeu lance la partie.")
+      .setFooter(version);
+      return message.channel.send(serverembed);
     }
   }
 
   if (cmd === `${prefix}gamestats`) {
-    if (SechecC == 0 && Sechec == 0 && Ssucess == 0 && SsuccessC == 0 && gamestatus == 0) {
+    if (SechecC == 0 && Sechec == 0 && Ssuccess == 0 && SsuccessC == 0 && gamestatus == 0) {
+      console.log("0x4 + gamestatus0->" + gamestatus);
       serverembed = new Discord.RichEmbed()
-      .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+      .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
       .setColor("#ff3838")
       .setTitle("La partie n'a pas démarrer")
       .setDescription("Tapez `/gamestart` pour démarrer la partie.")
       .setFooter(version);
-      message.channel.send(serverembed);
+      return message.channel.send(serverembed);
     }
-    else if (SechecC == 0 && Sechec == 0 && Ssucess == 0 && SsuccessC == 0 && gamestatus == 1) {
+    else if (SechecC == 0 && Sechec == 0 && Ssuccess == 0 && SsuccessC == 0 && gamestatus == 1) {
+      console.log("0x4 + gamestatus1->" + gamestatus);
       serverembed = new Discord.RichEmbed()
-      .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+      .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
       .setColor("#ff3838")
       .setTitle("Pas de stats disponibles")
       .setDescription("Tapez `/roll` pour afficher l'aide.")
       .setFooter(version);
-      message.channel.send(serverembed);
+      return message.channel.send(serverembed);
     }
     else {
       serverembed = new Discord.RichEmbed()
-      .setAuthor("Résumé de la partie", questmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+      .setAuthor("Résumé de la partie", questmark, dicetinyadmin.githubDicetiny)
       .setColor("#18dcff")
       .setThumbnail(gicon)
       .setTitle("Statistiques :")
-      .setDescription("Échec Critique = " + SechecC + "\n Échec = " + Sechec + "\n Succès = " + Ssucess + "\n Succès Critique = " + SsuccessC)
+      .setDescription("Échec Critique = " + SechecC + "\n Échec = " + Sechec + "\n Succès = " + Ssuccess + "\n Succès Critique = " + SsuccessC)
       .setFooter(version);
-      message.channel.send(serverembed);
+      return message.channel.send(serverembed);
     }
   }
 
   if(cmd === `${prefix}roll`){
     if (cmd2 == undefined) {
       serverembed = new Discord.RichEmbed()
-      .setAuthor("Menu d'aide", questmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+      .setAuthor("Menu d'aide", questmark, dicetinyadmin.githubDicetiny)
       .setURL("https://github.com/SRThibaultP")
       .setColor("#18dcff")
       .setThumbnail(bicon)
@@ -218,7 +246,7 @@ dicetiny.on("message", async message => {
               console.log("Erreur : Les stats sont supérieur à 6");
               console.log("********************");
               serverembed = new Discord.RichEmbed()
-              .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+              .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
               .setColor("#e67e22")
               .setTitle("Les stats sont supérieur à 6")
               .setDescription("Tapez `/roll` pour afficher l'aide.")
@@ -227,9 +255,9 @@ dicetiny.on("message", async message => {
             }
             else {
               if (aleatoire == 1) {
-                fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
+                dicetinyadmin.githubDicetinyfichier = images.void;
                 serverembed = new Discord.RichEmbed()
-                .setAuthor("Succès critique", checkmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+                .setAuthor("Succès critique", checkmark, dicetinyadmin.githubDicetiny)
                 .setColor("#32ff7e")
                 .setThumbnail(fichier)
                 .setTitle("Le résultat est " + aleatoire)
@@ -237,9 +265,9 @@ dicetiny.on("message", async message => {
                 SsuccessC = SsuccessC + 1;
               }
               else if (aleatoire == 6) {
-                fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
+                dicetinyadmin.githubDicetinyfichier = images.void;
                 serverembed = new Discord.RichEmbed()
-                .setAuthor("Échec critique", crossmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+                .setAuthor("Échec critique", crossmark, dicetinyadmin.githubDicetiny)
                 .setColor("#ff3838")
                 .setThumbnail(fichier)
                 .setTitle("Le résultat est " + aleatoire)
@@ -247,19 +275,19 @@ dicetiny.on("message", async message => {
                 SechecC = SechecC + 1;
               }
               else if (aleatoire <= stats) {
-                fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
+                dicetinyadmin.githubDicetinyfichier = images.void;
                 serverembed = new Discord.RichEmbed()
-                .setAuthor("Succès", checkmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+                .setAuthor("Succès", checkmark, dicetinyadmin.githubDicetiny)
                 .setColor("#3ae374")
                 .setThumbnail(fichier)
                 .setTitle("Le résultat est " + aleatoire)
                 .setDescription(userBrut);
-                Ssucess = Ssucess + 1;
+                Ssuccess = Ssuccess + 1;
               }
               else if (aleatoire > stats) {
-                fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
+                dicetinyadmin.githubDicetinyfichier = images.void;
                 serverembed = new Discord.RichEmbed()
-                .setAuthor("Échec", crossmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+                .setAuthor("Échec", crossmark, dicetinyadmin.githubDicetiny)
                 .setColor("#ff4d4d")
                 .setThumbnail(fichier)
                 .setTitle("Le résultat est " + aleatoire)
@@ -279,7 +307,7 @@ dicetiny.on("message", async message => {
               console.log("Erreur : Les stats sont supérieur à 100");
               console.log("********************");
               serverembed = new Discord.RichEmbed()
-              .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+              .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
               .setColor("#e67e22")
               .setTitle("Les stats sont supérieur à 100")
               .setDescription("Tapez `/roll` pour afficher l'aide.")
@@ -288,9 +316,9 @@ dicetiny.on("message", async message => {
             }
             else {
               if (aleatoire <= 5) {
-                fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
+                dicetinyadmin.githubDicetinyfichier = images.void;
                 serverembed = new Discord.RichEmbed()
-                .setAuthor("Succès critique", checkmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+                .setAuthor("Succès critique", checkmark, dicetinyadmin.githubDicetiny)
                 .setColor("#32ff7e")
                 .setThumbnail(fichier)
                 .setTitle("Le résultat est " + aleatoire)
@@ -298,9 +326,9 @@ dicetiny.on("message", async message => {
                 SsuccessC = SsuccessC + 1;
               }
               else if (aleatoire >= 95) {
-                fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
+                dicetinyadmin.githubDicetinyfichier = images.void;
                 serverembed = new Discord.RichEmbed()
-                .setAuthor("Échec critique", crossmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+                .setAuthor("Échec critique", crossmark, dicetinyadmin.githubDicetiny)
                 .setColor("#ff3838")
                 .setThumbnail(fichier)
                 .setTitle("Le résultat est " + aleatoire)
@@ -308,19 +336,19 @@ dicetiny.on("message", async message => {
                 SechecC = SechecC + 1;
               }
               else if (aleatoire <= stats) {
-                fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
+                dicetinyadmin.githubDicetinyfichier = images.void;
                 serverembed = new Discord.RichEmbed()
-                .setAuthor("Succès", checkmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+                .setAuthor("Succès", checkmark, dicetinyadmin.githubDicetiny)
                 .setColor("#3ae374")
                 .setThumbnail(fichier)
                 .setTitle("Le résultat est " + aleatoire)
                 .setDescription(userBrut);
-                Ssucess = Ssucess + 1;
+                Ssuccess = Ssuccess + 1;
               }
               else if (aleatoire > stats) {
-                fichier = 'https://raw.githubusercontent.com/SRThibaultP/MrDicetinyZero/master/img/error.png';
+                dicetinyadmin.githubDicetinyfichier = images.void;
                 serverembed = new Discord.RichEmbed()
-                .setAuthor("Échec", crossmark, "https://github.com/SRThibaultP/MrDicetinyZero")
+                .setAuthor("Échec", crossmark, dicetinyadmin.githubDicetiny)
                 .setColor("#ff4d4d")
                 .setThumbnail(fichier)
                 .setTitle("Le résultat est " + aleatoire)
@@ -341,7 +369,7 @@ dicetiny.on("message", async message => {
             .setDescription(userBrut);
             message.channel.send(serverembed);
           }
-          dicetiny.user.setActivity("JDR en cours | /roll pour afficher l'aide Stats : ÉC: " + SechecC + " É: " + Sechec + " S: " + Ssucess + " SC: " + SsuccessC, {type: "PLAYING"});
+          dicetiny.user.setActivity("JDR en cours | /roll pour afficher l'aide Stats : ÉC: " + SechecC + " É: " + Sechec + " S: " + Ssuccess + " SC: " + SsuccessC, {type: "PLAYING"});
           return message.channel.send(serverembed);
         }
         else if (faces < stats) {
@@ -350,7 +378,7 @@ dicetiny.on("message", async message => {
           console.log("Erreur : Les stats sont supérieur aux faces du dé");
           console.log("********************");
           serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
           .setColor("#e67e22")
           .setTitle("Les stats sont supérieur aux faces du dé")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
@@ -361,7 +389,7 @@ dicetiny.on("message", async message => {
           console.log("Erreur : Le dé ne possède pas de faces");
           console.log("********************");
           serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
           .setColor("#e67e22")
           .setTitle("Le dé ne possède pas de faces")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
@@ -372,7 +400,7 @@ dicetiny.on("message", async message => {
           console.log("Erreur : Le dé ne possède pas de stats");
           console.log("********************");
           serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
           .setColor("#e67e22")
           .setTitle("Le dé ne possède pas de stats")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
@@ -383,7 +411,7 @@ dicetiny.on("message", async message => {
           console.log("Erreur : Vous avez mis un espace après le d");
           console.log("********************");
           serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
           .setColor("#e67e22")
           .setTitle("Vous avez mis un espace après le `d`")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
@@ -394,7 +422,7 @@ dicetiny.on("message", async message => {
           console.log("Erreur : Les faces et stats du dé sont égaux à zero");
           console.log("********************");
           serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
           .setColor("#e67e22")
           .setTitle("Les faces et stats du dé sont égaux à zero")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
@@ -405,7 +433,7 @@ dicetiny.on("message", async message => {
           console.log("Erreur : Mauvaise syntaxe");
           console.log("********************");
           serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
           .setColor("#e67e22")
           .setTitle("Mauvaise syntaxe")
           .setDescription("Tapez `/roll` pour afficher l'aide.")
@@ -417,7 +445,7 @@ dicetiny.on("message", async message => {
         console.log("Erreur : La partie n'a pas démarrer");
         console.log("********************");
         serverembed = new Discord.RichEmbed()
-        .setAuthor("Erreur", errormark, "https://github.com/SRThibaultP/MrDicetinyZero")
+        .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
         .setColor("#ff3838")
         .setTitle("La partie n'a pas démarrer")
         .setDescription("Tapez `/gamestart` pour démarrer la partie.")

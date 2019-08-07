@@ -208,7 +208,7 @@ dicetiny.on("message", async message => {
       .addField("À propos :", "Le dé utilisé par le bot est basé sur Donjons & Dragons.")
       .addField("Commandes disponibles :", "`/roll dX` -> Lancer de dé. \n `/roll dXsY` -> Lancer de dé avec des stats.")
       .addField("Syntaxe :", "Le chiffre après `d` indique le nombre de faces du dé. \n Le chiffre après `s` indique les stats du joueur.")
-      .addField("Remarque :","`X` et `Y` doivent être remplacé par des valeurs supérieur à 0. \n Si vous n'avez pas de stats, ajoutez pas le `s`")
+      .addField("Remarque :","`X` et `Y` doivent être remplacé par des valeurs supérieur à 0. \n Si vous n'avez pas de stats, n'ajoutez pas le `s`")
       .setFooter(version);
       return message.channel.send(serverembed);
     }

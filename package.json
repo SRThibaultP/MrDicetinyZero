@@ -4,7 +4,7 @@
   "description": "Un bot discord pour lancer des dé.",
   "main": "dicetiny.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node dicetiny.js"
   },
   "repository": {
     "type": "git",

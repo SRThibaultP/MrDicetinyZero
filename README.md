@@ -11,7 +11,7 @@ Les commandes sont disponible dans le [wiki](https://github.com/SRThibaultP/MrDi
 
 1. Créer un bot discord depuis le [portail développeur](https://discordapp.com/developers/applications/)
 2. Télécharger les fichiers [ici](https://github.com/SRThibaultP/MrDicetinyZero/releases)
-3. Coller la clé de l'API Discord dans `config.json`
+3. Coller la clé Token Discord dans `config.json`
 4. Installer [Node.js](https://nodejs.org)
 5. Exécuter la commande `npm install` dans le dossier de Mr Dicetiny
 6. Lancer le fichier `start.bat`

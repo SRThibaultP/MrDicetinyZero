@@ -2,11 +2,10 @@ const dicetinyconfig = require("./config.json");
 const dicetinyadmin = require("./dicetiny.json");
 const images = require("./images.json");
 const Discord = require("discord.js");
+const message = require("./message-fr.json")
 
 const dicetiny = new Discord.Client({disableEveryone: true});
-let aleatoire, serverembed;
-let gamestart, gamestop, gamestatus = 0, gameDstart, gameDstop;
-let Ssuccess = SsuccessC = Sechec = SechecC = 0;
+let aleatoire = serverembed = gamestart = gamestop = gamestatus = gameDstart = gameDstop = Ssuccess = SsuccessC = Sechec = SechecC = 0;
 const version = dicetinyadmin.version; //VERSION DU BUILD
 const JDRName = dicetinyconfig.JDRName; //NOM DU JDR
 const JDRAdmins = dicetinyconfig.adminRank;
@@ -43,6 +42,17 @@ function beautifulM() {
   return n;
 }
 
+function messageError() {
+  serverembed = new Discord.RichEmbed()
+  .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
+  .setURL(dicetinyadmin.githubDicetiny)
+  .setColor("#e67e22")
+  .setTitle("Vous n'êtes pas un maître de jeu")
+  .setDescription("Vous n'avez pas la permission d'exécuter cette commande")
+  .setFooter(version);
+  return message.channel.send(serverembed);
+}
+
 dicetiny.on("message", async message => {
   if(message.author.bot);
   if(message.channel.type === "dm");
@@ -57,7 +67,7 @@ dicetiny.on("message", async message => {
   let bicon = dicetiny.user.avatarURL;
   let gicon = message.guild.iconURL;
   let uicon = message.author.avatarURL;
-  let members = message.guild.roles.get("576848344069046282").members;
+  let members = message.guild.roles.get("674001565626925059").members;
 
   if(cmd === `${prefix}botstop`){
     if (gamestatus == 0 && message.member.roles.find(r => r.name === JDRAdmins)) {

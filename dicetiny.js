@@ -2,14 +2,11 @@ const dicetinyconfig = require("./config.json");
 const dicetinyadmin = require("./dicetiny.json");
 const images = require("./images.json");
 const Discord = require("discord.js");
-const message = require("./message-fr.json");
 var rtnmsg = require("./rtnmsg.js");
-//var logger = require("./logger.js"); Need to rmv l21 to 24
 
 const dicetiny = new Discord.Client({disableEveryone: true});
 let aleatoire, serverembed;
-let gamestart, gamestop, gamestatus = 0, gameDstart, gameDstop;
-let Ssuccess = SsuccessC = Sechec = SechecC = 0;
+let gamestart, gamestop, gamestatus = 0, gameDstart, gameDstop, Ssuccess = SsuccessC = Sechec = SechecC = 0;
 const version = dicetinyadmin.version; //VERSION DU BUILD
 const JDRName = dicetinyconfig.JDRName; //NOM DU JDR
 const JDRAdmins = dicetinyconfig.adminRank;
@@ -29,12 +26,6 @@ function logger() {
   return date.toLocaleTimeString("fr-fr", options);
 }
 
-dicetiny.on("ready", async () => {
-  console.log(logger() + ` [INFO]: ${dicetiny.user.username} est en ligne !`);
-  dicetiny.user.setActivity("Attend le démarage du JDR /gamestart pour démarrer la partie /roll pour afficher l'aide dans la partie", {type: "PLAYING"});
-  dicetiny.user.setStatus('idle');
-});
-
 function beautifulH() {
   let d = new Date();
   let n = d.getHours();
@@ -53,6 +44,12 @@ function beautifulM() {
   return n;
 }
 
+dicetiny.on("ready", async () => {
+  console.log(logger() + ` [INFO]: ${dicetiny.user.username} est en ligne !`);
+  dicetiny.user.setActivity("Attend le démarage du JDR /gamestart pour démarrer la partie /roll pour afficher l'aide dans la partie", {type: "PLAYING"});
+  dicetiny.user.setStatus('idle');
+});
+
 dicetiny.on("message", async message => {
   if(message.author.bot);
   if(message.channel.type === "dm");
@@ -70,7 +67,16 @@ dicetiny.on("message", async message => {
   let getServerID = message.guild.id;
   let members = message.guild.roles.get(getServerID).members;
 
-  if(cmd === `${prefix}yousk2`) return console.log(serverID);
+  if(cmd === `${prefix}yousk2`) {
+    toReturn = new Discord.RichEmbed()
+    .setAuthor("DEV", checkmark)
+    .setColor("#32ff7e")
+    .setThumbnail(gicon)
+    .setTitle(text)
+    .setDescription(text2);
+    message.channel.send(toReturn);
+    return console.log(logger() + " [DEV]: DEV");
+  }
 
   if(cmd === `${prefix}gamestart`){
     if (gamestatus == 0 && message.member.roles.find(r => r.name === JDRAdmins)) {
@@ -113,207 +119,72 @@ dicetiny.on("message", async message => {
         var faces = infos[0].substr(1); //valeur apres "d" ("d" non compris avec .substr) ex !roll d12s45 ->  12
         var stats = infos[1]; //valeur apres "s" ex !roll d12s45 ->  45
 
-        if (stats == undefined && faces.match(/^[0-9]+$/) != null) { //LANCER D'UN DE SANS STATS = Dé Classique
-          console.log("Lancer d'un dé à " + faces + " faces");
-          aleatoire = Math.floor((Math.random() * faces) + 1);
-          console.log("Le résultat est " + aleatoire);
-          serverembed = new Discord.RichEmbed()
-          .setColor("#3ae374")
-          .setThumbnail(uicon)
-          .setTitle("Le résultat est " + aleatoire)
-          .setDescription(userBrut);
-          /*return*/ message.channel.send(serverembed);
+        function rolling() {
+          return Math.floor((Math.random() * faces) + 1);
+        }
+
+        if (stats == undefined && faces.match(/^[0-9]+$/) != null) {
+          aleatoire = rolling();
+          console.log(logger() + " [INFO]: Lancer d'un dé à " + faces + " faces");
+          console.log(logger() + " [INFO]: Le résultat est " + aleatoire);
+          return message.channel.send(rtnmsg.roll("noStats", faces, aleatoire, uicon, userBrut));//LANCER D'UN DE SANS STATS = Dé Classique
         }
         else if (faces > 0 && stats > 0 && faces.match(/^[0-9]+$/) != null && stats.match(/^[0-9]+$/) != null){
-          console.log("Lancer d'un dé à " + faces + " faces avec " + stats + " de stats.");
-          aleatoire = Math.floor((Math.random() * faces) + 1);//le random est ici
-          console.log("Le résultat est " + aleatoire);
+          aleatoire = rolling();
+          console.log(logger() + " [INFO]: Lancer d'un dé à " + faces + " faces avec " + stats + " de stats");
+          console.log(logger() + " [INFO]: Le résultat est " + aleatoire);
           if (faces == 6) {
-            if (stats > 6) {
-              console.log("**Erreur : Les stats sont supérieur à 6");
-              serverembed = new Discord.RichEmbed()
-              .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
-              .setColor("#e67e22")
-              .setTitle("Les stats sont supérieur à 6")
-              .setDescription("Tapez `/roll` pour afficher l'aide.")
-              .setFooter(version);
-              return message.channel.send(serverembed);
-            }
+            if (stats > 6) return message.channel.send(rtnmsg.roll("superior", faces));
             else {
               if (aleatoire == 1) {
-                dicetinyadmin.githubDicetinyfichier = images.void;
-                serverembed = new Discord.RichEmbed()
-                .setAuthor("Succès critique", checkmark, dicetinyadmin.githubDicetiny)
-                .setColor("#32ff7e")
-                .setThumbnail(fichier)
-                .setTitle("Le résultat est " + aleatoire)
-                .setDescription(userBrut);
-                SsuccessC = SsuccessC + 1;
+                SsuccessC++;
+                return message.channel.send(rtnmsg.roll("succesCritique", uicon, aleatoire, userBrut));
               }
               else if (aleatoire == 6) {
-                dicetinyadmin.githubDicetinyfichier = images.void;
-                serverembed = new Discord.RichEmbed()
-                .setAuthor("Échec critique", crossmark, dicetinyadmin.githubDicetiny)
-                .setColor("#ff3838")
-                .setThumbnail(fichier)
-                .setTitle("Le résultat est " + aleatoire)
-                .setDescription(userBrut);
-                SechecC = SechecC + 1;
+                SechecC++;
+                return message.channel.send(rtnmsg.roll("echecCritique", uicon, aleatoire, userBrut));
               }
               else if (aleatoire <= stats) {
-                dicetinyadmin.githubDicetinyfichier = images.void;
-                serverembed = new Discord.RichEmbed()
-                .setAuthor("Succès", checkmark, dicetinyadmin.githubDicetiny)
-                .setColor("#3ae374")
-                .setThumbnail(fichier)
-                .setTitle("Le résultat est " + aleatoire)
-                .setDescription(userBrut);
-                Ssuccess = Ssuccess + 1;
+                Ssuccess++;
+                return message.channel.send(rtnmsg.roll("succes", uicon, aleatoire, userBrut));
               }
               else if (aleatoire > stats) {
-                dicetinyadmin.githubDicetinyfichier = images.void;
-                serverembed = new Discord.RichEmbed()
-                .setAuthor("Échec", crossmark, dicetinyadmin.githubDicetiny)
-                .setColor("#ff4d4d")
-                .setThumbnail(fichier)
-                .setTitle("Le résultat est " + aleatoire)
-                .setDescription(userBrut);
-                Sechec = Sechec + 1;
+                Sechec++;
+                return message.channel.send(rtnmsg.roll("echec", uicon, aleatoire, userBrut));
               }
-              else { //Impossible normalement
-                console.log("erreur inconnu")
-              }
+              else return message.channel.send(rtnmsg.error("unknown"));//aleatoire ne possede pas de valeur?
             }
           }
           else if (faces == 100) {
-            console.log("Le dé possède 100 faces");
-            if (stats > 100) {
-              console.log("Erreur : Les stats sont supérieur à 100");
-              serverembed = new Discord.RichEmbed()
-              .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
-              .setColor("#e67e22")
-              .setTitle("Les stats sont supérieur à 100")
-              .setDescription("Tapez `/roll` pour afficher l'aide.")
-              .setFooter(version);
-              return message.channel.send(serverembed);
-            }
+            if (stats > 100) return message.channel.send(rtnmsg.roll("superior", faces));
             else {
-              if (aleatoire <= 5) {
-                dicetinyadmin.githubDicetinyfichier = images.void;
-                serverembed = new Discord.RichEmbed()
-                .setAuthor("Succès critique", checkmark, dicetinyadmin.githubDicetiny)
-                .setColor("#32ff7e")
-                .setThumbnail(fichier)
-                .setTitle("Le résultat est " + aleatoire)
-                .setDescription(userBrut);
-                SsuccessC = SsuccessC + 1;
+              if (aleatoire == 1) {//réussite critique
+                SsuccessC++;
+                return message.channel.send(rtnmsg.roll("succesCritique", uicon, aleatoire, userBrut));
               }
-              else if (aleatoire >= 95) {
-                dicetinyadmin.githubDicetinyfichier = images.void;
-                serverembed = new Discord.RichEmbed()
-                .setAuthor("Échec critique", crossmark, dicetinyadmin.githubDicetiny)
-                .setColor("#ff3838")
-                .setThumbnail(fichier)
-                .setTitle("Le résultat est " + aleatoire)
-                .setDescription(userBrut);
-                SechecC = SechecC + 1;
+              else if (aleatoire == 100) {//echec creitique
+                SechecC++;
+                return message.channel.send(rtnmsg.roll("echecCritique", uicon, aleatoire, userBrut));
               }
               else if (aleatoire <= stats) {
-                dicetinyadmin.githubDicetinyfichier = images.void;
-                serverembed = new Discord.RichEmbed()
-                .setAuthor("Succès", checkmark, dicetinyadmin.githubDicetiny)
-                .setColor("#3ae374")
-                .setThumbnail(fichier)
-                .setTitle("Le résultat est " + aleatoire)
-                .setDescription(userBrut);
-                Ssuccess = Ssuccess + 1;
+                Ssuccess++;
+                return message.channel.send(rtnmsg.roll("succes", uicon, aleatoire, userBrut));
               }
               else if (aleatoire > stats) {
-                dicetinyadmin.githubDicetinyfichier = images.void;
-                serverembed = new Discord.RichEmbed()
-                .setAuthor("Échec", crossmark, dicetinyadmin.githubDicetiny)
-                .setColor("#ff4d4d")
-                .setThumbnail(fichier)
-                .setTitle("Le résultat est " + aleatoire)
-                .setDescription(userBrut);
-                Sechec = Sechec + 1;
+                Sechec++;
+                return message.channel.send(rtnmsg.roll("echec", uicon, aleatoire, userBrut));
               }
-              else { //Impossible normalement
-                console.log("erreur inconnu");
-              }
+              else return message.channel.send(rtnmsg.error("unknown"));//aleatoire ne possede pas de valeur?
             }
           }
-          else { //dé ni 6 ni 100 (ou pas en fait)
-            serverembed = new Discord.RichEmbed()
-            .setColor("#3ae374")
-            .setThumbnail(fichier)
-            .setTitle("Le résultat est " + aleatoire)
-            .setDescription(userBrut);
-            return message.channel.send(serverembed);
-          }
-          dicetiny.user.setActivity("JDR en cours | /roll pour afficher l'aide Stats : ÉC: " + SechecC + " É: " + Sechec + " S: " + Ssuccess + " SC: " + SsuccessC, {type: "PLAYING"});
-          return message.channel.send(serverembed);
+          else return message.channel.send(rtnmsg.roll("noStats", faces, aleatoire, uicon, userBrut));
+          dicetiny.user.setActivity("JDR en cours | /roll pour afficher l'aide | STATS: ÉC: " + SechecC + " É: " + Sechec + " S: " + Ssuccess + " SC: " + SsuccessC, {type: "PLAYING"});
         }
-        else if (faces < stats) {
-          console.log("Erreur : Les stats sont supérieur aux faces du dé");
-          serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
-          .setColor("#e67e22")
-          .setTitle("Les stats sont supérieur aux faces du dé")
-          .setDescription("Tapez `/roll` pour afficher l'aide.")
-          .setFooter(version);
-          return message.channel.send(serverembed);
-        }
-        else if (stats > 0 && faces == 0) { //stats uniquement = LE MEC S'EST GOURE
-          console.log("Erreur : Le dé ne possède pas de faces");
-          serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
-          .setColor("#e67e22")
-          .setTitle("Le dé ne possède pas de faces")
-          .setDescription("Tapez `/roll` pour afficher l'aide.")
-          .setFooter(version);
-          return message.channel.send(serverembed);
-        }
-        else if (faces > 0 && stats == 0) { //stats uniquement = LE MEC S'EST GOURE
-          console.log("Erreur : Le dé ne possède pas de stats");
-          serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
-          .setColor("#e67e22")
-          .setTitle("Le dé ne possède pas de stats")
-          .setDescription("Tapez `/roll` pour afficher l'aide.")
-          .setFooter(version);
-          return message.channel.send(serverembed);
-        }
-        else if (faces == 0 && stats == undefined) {//espace au d (ex : /roll d 4269)
-          console.log("Erreur : Vous avez mis un espace après le d");
-          serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
-          .setColor("#e67e22")
-          .setTitle("Vous avez mis un espace après le `d`")
-          .setDescription("Tapez `/roll` pour afficher l'aide.")
-          .setFooter(version);
-          return message.channel.send(serverembed);
-        }
-        else if (stats == 0 && faces == 0) {//pas de valeur ds les variables
-          console.log("Erreur : Les faces et stats du dé sont égaux à zero");
-          serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
-          .setColor("#e67e22")
-          .setTitle("Les faces et stats du dé sont égaux à zero")
-          .setDescription("Tapez `/roll` pour afficher l'aide.")
-          .setFooter(version);
-          return message.channel.send(serverembed);
-        }
-        else {
-          console.log("Erreur : Mauvaise syntaxe");
-          serverembed = new Discord.RichEmbed()
-          .setAuthor("Erreur", errormark, dicetinyadmin.githubDicetiny)
-          .setColor("#e67e22")
-          .setTitle("Mauvaise syntaxe")
-          .setDescription("Tapez `/roll` pour afficher l'aide.")
-          .setFooter(version);
-          return message.channel.send(serverembed);
-        }
+        else if (faces < stats) return message.channel.send(rtnmsg.error("facesSupStats"));
+        else if (stats > 0 && faces == 0) return message.channel.send(rtnmsg.error("noFaces"));//stats uniquement = LE MEC S'EST GOURE
+        else if (faces == 0 && stats == undefined) return message.channel.send(rtnmsg.error("space"));//espace au d (ex : /roll d 4269)
+        else if (stats == 0 && faces == 0) return message.channel.send(rtnmsg.error("equalZero"));//pas de valeur ds les variables
+        else return message.channel.send(rtnmsg.error("syntaxe"));
       }
       else return message.channel.send(rtnmsg.error("notStarted"));
     }

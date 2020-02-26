@@ -1,6 +1,6 @@
 {
   "name": "mrdicetinyzero",
-  "version": "S.1.2",
+  "version": "3",
   "description": "Un bot discord pour lancer des dé.",
   "main": "dicetiny.js",
   "scripts": {

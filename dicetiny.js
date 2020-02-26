@@ -7,7 +7,9 @@ var rtnmsg = require("./rtnmsg.js");
 //var logger = require("./logger.js"); Need to rmv l21 to 24
 
 const dicetiny = new Discord.Client({disableEveryone: true});
-let aleatoire = serverembed = gamestart = gamestop = gamestatus = gameDstart = gameDstop = Ssuccess = SsuccessC = Sechec = SechecC = 0;
+let aleatoire, serverembed;
+let gamestart, gamestop, gamestatus = 0, gameDstart, gameDstop;
+let Ssuccess = SsuccessC = Sechec = SechecC = 0;
 const version = dicetinyadmin.version; //VERSION DU BUILD
 const JDRName = dicetinyconfig.JDRName; //NOM DU JDR
 const JDRAdmins = dicetinyconfig.adminRank;

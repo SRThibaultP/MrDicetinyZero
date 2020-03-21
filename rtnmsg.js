@@ -17,7 +17,7 @@ function logger() {
 }
 
 module.exports = {
-  info: function(op0, op1, op2, op3, op4) {
+  info: function(op0, op1, op2, op3, op4, op5) {
     switch (op0) {
       case "help":
       console.log(logger() + " [INFO]: Affichage du menu d'aide")
@@ -59,13 +59,13 @@ module.exports = {
       return toReturn;
 
       case "summary":
-      console.log(logger() + "[INFO]: Échec Critique = " + SechecC + "Échec = " + Sechec + "Succès = " + Ssuccess + "Succès Critique = " + SsuccessC)
+      console.log(logger() + " [INFO]: Échec Critique : " + op2 + " Échec : " + op3 + " Succès : " + op4 + " Succès Critique : " + op5)
       toReturn = new Discord.RichEmbed()
       .setAuthor("Résumé de la partie", questmark)
       .setColor("#18dcff")
-      .setThumbnail(gicon)
+      .setThumbnail(op1)
       .setTitle("Statistiques :")
-      .setDescription("Échec Critique = " + SechecC + "\n Échec = " + Sechec + "\n Succès = " + Ssuccess + "\n Succès Critique = " + SsuccessC)
+      .setDescription("Échec Critique : " + op2 + "\n Échec : " + op3 + "\n Succès : " + op4 + "\n Succès Critique : " + op5)
       .setFooter(version);
       return toReturn;
     }

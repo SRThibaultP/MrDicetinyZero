@@ -1,21 +1,20 @@
 const dicetinyconfig = require("./config.json");
 const dicetinyadmin = require("./dicetiny.json");
-const images = require("./images.json");
+const img = require("./images.json");
 const Discord = require("discord.js");
 var rtnmsg = require("./rtnmsg.js");
 
 const dicetiny = new Discord.Client({disableEveryone: true});
-let aleatoire, serverembed;
-let gamestart, gamestop, gamestatus = 0, gameDstart, gameDstop, Ssuccess = SsuccessC = Sechec = SechecC = 0;
+let aleatoire = serverembed = gamestatus = gameDstart = gameDstop = Ssuccess = SsuccessC = Sechec = SechecC = 0;
 const version = dicetinyadmin.version; //VERSION DU BUILD
 const JDRName = dicetinyconfig.JDRName; //NOM DU JDR
 const JDRAdmins = dicetinyconfig.adminRank;
 const JDRPlayers = dicetinyconfig.playerRank;
-const checkmark = images.checkmark;
-const crossmark = images.crossmark;
-const questmark = images.questmark;
-const errormark = images.errormark;
-let fichier = images.void;
+const checkmark = img.checkmark;
+const crossmark = img.crossmark;
+const questmark = img.questmark;
+const errormark = img.errormark;
+let fichier = img.void;
 let serverID = null;
 
 function logger() {
@@ -51,6 +50,7 @@ dicetiny.on("ready", async () => {
 });
 
 dicetiny.on("message", async message => {
+  dicetiny.user.setActivity("JDR en cours | /roll pour afficher l'aide | STATS: ÉC: " + SechecC + " É: " + Sechec + " S: " + Ssuccess + " SC: " + SsuccessC, { type: "PLAYING" });
   if(message.author.bot);
   if(message.channel.type === "dm");
 
@@ -67,7 +67,7 @@ dicetiny.on("message", async message => {
   let getServerID = message.guild.id;
   let members = message.guild.roles.get(getServerID).members;
 
-  if(cmd === `${prefix}yousk2`) {
+  /*if(cmd === `${prefix}yousk2`) {
     toReturn = new Discord.RichEmbed()
     .setAuthor("DEV", checkmark)
     .setColor("#32ff7e")
@@ -76,7 +76,11 @@ dicetiny.on("message", async message => {
     .setDescription(text2);
     message.channel.send(toReturn);
     return console.log(logger() + " [DEV]: DEV");
-  }
+    console.log(SechecC);
+    console.log(Sechec);
+    console.log(Ssuccess);
+    console.log(SsuccessC);
+  }*/
 
   if(cmd === `${prefix}gamestart`){
     if (gamestatus == 0 && message.member.roles.find(r => r.name === JDRAdmins)) {
@@ -108,10 +112,11 @@ dicetiny.on("message", async message => {
   if (cmd === `${prefix}gamestats`) {
     if (SechecC == 0 && Sechec == 0 && Ssuccess == 0 && SsuccessC == 0 && gamestatus == 0) return message.channel.send(rtnmsg.error("notStarted"));//tt els stats = 0 =>game non start
     else if (SechecC == 0 && Sechec == 0 && Ssuccess == 0 && SsuccessC == 0 && gamestatus == 1) return message.channel.send(rtnmsg.error("noStats"));//tt les stats = 0 mais game start =>aucune /roll lancée
-    else return message.channel.send(rtnmsg.info("summary"));//affichage du résumée
+    else return message.channel.send(rtnmsg.info("summary", gicon, SechecC, Sechec, Ssuccess, SsuccessC));//affichage du résumée
   }
 
   if(cmd === `${prefix}roll`){
+    //dicetiny.user.setActivity("JDR en cours | /roll pour afficher l'aide | STATS: ÉC: " + SechecC + " É: " + Sechec + " S: " + Ssuccess + " SC: " + SsuccessC, { type: "PLAYING" });
     if (cmd2 == undefined) return message.channel.send(rtnmsg.info("help", bicon));//affichage de l'aide
     else {
       if (gamestatus == 1) {
@@ -178,7 +183,6 @@ dicetiny.on("message", async message => {
             }
           }
           else return message.channel.send(rtnmsg.roll("noStats", faces, aleatoire, uicon, userBrut));
-          dicetiny.user.setActivity("JDR en cours | /roll pour afficher l'aide | STATS: ÉC: " + SechecC + " É: " + Sechec + " S: " + Ssuccess + " SC: " + SsuccessC, {type: "PLAYING"});
         }
         else if (faces < stats) return message.channel.send(rtnmsg.error("facesSupStats"));
         else if (stats > 0 && faces == 0) return message.channel.send(rtnmsg.error("noFaces"));//stats uniquement = LE MEC S'EST GOURE

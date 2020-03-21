@@ -1,7 +1,7 @@
 {
   "token": "INSERT TOKEN KEY",
   "prefix": "/",
-  "JDRName": "DEV",
+  "JDRName": "1.3",
   "adminRank": "JDR Master",
   "playerRank": "JDR Player"
 }
